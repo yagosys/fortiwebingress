@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 demoapp1="goweb"
-demoapp1image="ttl.sh/goweb:1h"
+demoapp1image="interbeing/myfmg:goweb"
 demoapp1port="80"
 
 demoapp2="nginx"
