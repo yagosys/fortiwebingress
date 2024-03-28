@@ -8,7 +8,7 @@ cat << EOF | tee  $filename
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: $fortiwebcontainerimage-deployment
+  name: $fortiwebcontainerversion-deployment
   labels:
     $fortiweblabel
 spec:
@@ -22,7 +22,7 @@ spec:
         $fortiweblabel
     spec:
       containers:
-      - name: $fortiwebcontainerimage-container
+      - name: $fortiwebcontainerversion-container
         image: $fortiwebcontainerimage:latest
         securityContext:
           privileged: true
@@ -43,7 +43,7 @@ cat << EOF | tee -a $filename
 apiVersion: v1
 kind: Service
 metadata:
-  name: $fortiwebcontainerimage-service
+  name: $fortiwebcontainerversion-service
   annotations:
     $fortiweblbsvcmetadataannotation
 spec:
@@ -56,7 +56,7 @@ spec:
     name: gui
     targetPort: 43
   - port: $fortiwebexposedvipserviceport
-    name: $fortiwebcontainerimage-service-$fortiwebexposedvipserviceport
+    name: $fortiwebcontainerversion-service-$fortiwebexposedvipserviceport
     targetPort: $fortiwebexposedvipserviceport
   selector:
     $fortiweblabel
@@ -78,6 +78,7 @@ EOF
 
 function install_fortiweb_ingresscontroller() {
 cat << EOF | tee -a $filename
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
