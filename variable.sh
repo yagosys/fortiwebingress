@@ -13,7 +13,7 @@ nodename="k8strainingmaster001.westus.cloudapp.azure.com"
 fortiweblabel="app: fortiweb"
 fortiwebcontainerrepo="interbeing/myfmg"
 fortiwebcontainerversion="fweb70577"
-fortiwebcontainerimage="$fortiwebcontainerversion"
+fortiwebcontainerimage="$fortiwebcontainerrepo$fortiwebcontainerversion"
 fortiwebexposedvipserviceport="8888"
 
 fortiwebingresscontrollerclassname="fortiwebingresscontroller"
