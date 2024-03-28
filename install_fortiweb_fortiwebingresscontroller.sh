@@ -101,6 +101,13 @@ spec:
         app: $fortiwebingresscontrollername
     spec:
       serviceAccountName: sa-$fortiwebingresscontrollername
+      initContainers:
+      - name: ssh-setup
+        image: interbeing/myfmg:my-ssh-setup-image
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: ssh-config
       containers:
       - name: $fortiwebingresscontrollername
         image: $fortiwebingresscontrollerimage
