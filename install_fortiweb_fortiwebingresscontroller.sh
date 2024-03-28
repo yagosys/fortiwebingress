@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: $fortiwebcontainerversion-container
-        image: $fortiwebcontainerimage:latest
+        image: $fortiwebcontainerimage
         securityContext:
           privileged: true
         ports:
