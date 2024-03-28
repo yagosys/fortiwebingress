@@ -67,6 +67,7 @@ EOF
 
 function install_ingressclass() {
 cat << EOF | tee -a $filename
+---
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
