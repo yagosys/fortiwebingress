@@ -18,3 +18,6 @@ function demo() {
 curl http://$nodename:$fortiwebexposedvipserviceport/v2
 curl http://$nodename:$fortiwebexposedvipserviceport/index.html
 }
+deploy_application_deployment
+deploy_application_clusterIPSVC
+
