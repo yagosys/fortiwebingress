@@ -19,7 +19,7 @@ fortiwebexposedvipserviceport="8888"
 fortiwebingresscontrollerclassname="fortiwebingresscontroller"
 
 fortiwebingresscontrollername="fortiwebingresscontrollerx86"
-fortiwebingresscontrollerimage="ttl.sh/fortiwebingresscontrollerx86:2h"
+fortiwebingresscontrollerimage="interbeing/myfmg:fortiwebingresscontrollerx86"
 fortiwebingresscontrollernamespace="default"
 
 filename="full_install.yaml"
