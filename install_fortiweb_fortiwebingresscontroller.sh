@@ -49,7 +49,7 @@ metadata:
 spec:
   sessionAffinity: ClientIP
   ports:
-  - port: 2222
+  - port: $fortiwebsshport 
     name: ssh
     targetPort: 22
   - port: 18443
@@ -112,6 +112,9 @@ spec:
       - name: $fortiwebingresscontrollername
         image: $fortiwebingresscontrollerimage
         imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: ssh-config
         ports:
         - containerPort: 80
 ---
@@ -122,6 +125,12 @@ metadata:
 rules:
 - apiGroups: ["", "extensions", "networking.k8s.io"]
   resources: ["ingresses", "services", "endpoints", "pods", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["secrets"]
   verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -139,8 +148,23 @@ subjects:
 EOF
 }
 
+function create_configmap_for_initcontainer() {
+cat << EOF | tee -a $filename
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ssh-config
+data:
+  SSH_HOST: "${fortiwebsshhost}"
+  SSH_PORT: "${fortiwebsshport}"
+  SSH_USERNAME: "${fortiwebsshusername}"
+  SSH_NEW_PASSWORD: "${fortiwebsshpassword}"
+  FORTIWEBIMAGENAME: "${fortiwebcontainerversion}"
+EOF
+}
 install_fortiweb_deployment
 expose_fortiweb_loadbalancer_svc
 install_ingressclass
 install_fortiweb_ingresscontroller
-
+create_configmap_for_initcontainer

@@ -18,11 +18,24 @@ fortiwebexposedvipserviceport="8888"
 
 fortiwebingresscontrollerclassname="fortiwebingresscontroller"
 
-fortiwebingresscontrollername="fortiwebingresscontrollerx86"
+fortiwebingresscontrollername="fortiwebingresscontroller"
 fortiwebingresscontrollerimage="interbeing/myfmg:fortiwebingresscontrollerx86"
 fortiwebingresscontrollernamespace="default"
 
+
 filename="full_install.yaml"
+
+fortiwebsshusername="admin"
+fortiwebsshhost="k8strainingmaster001.westus.cloudapp.azure.com"
+fortiwebsshport="2222"
+fortiwebsshpassword="Welcome.123"
+
+function getfortiweblbsvcip() {
+  if [ -z "$fortiwebsshhost" ]; then
+    fortiwebsshhost=$(kubectl get svc $fortiwebcontainerversion-service -o json | jq -r 'select(.spec.selector.app == "fortiweb") | .status.loadBalancer.ingress[0].ip')
+  fi
+echo $fortiwebsshhost
+}
 
 function configloadbalanceripifmetallbcontrollerinstalled() {
     cmd="kubectl get ipaddresspools -n metallb-system -o json"
@@ -30,5 +43,5 @@ function configloadbalanceripifmetallbcontrollerinstalled() {
     ip=$(echo "$ip" | cut -d'/' -f1)
     fortiweblbsvcmetadataannotation="metallb.universe.tf/loadBalancerIPs: $ip"
 }
-
+getfortiweblbsvcip
 configloadbalanceripifmetallbcontrollerinstalled
