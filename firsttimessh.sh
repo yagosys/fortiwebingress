@@ -15,16 +15,23 @@ echo "SSH host $host on port $port is available for connect"
 echo
 echo $new_password
 sleep 5
-/usr/bin/expect <<EOF
+/usr/bin/expect -d <<EOF
 spawn ssh -o "StrictHostKeyChecking=no" -p $port $username@$host
 expect "password:"
+sleep 1
 send \r
 expect "Enter * old password:"
+sleep 1
 send \r
+sleep 1
 expect "Enter * new password:"
+sleep 1
 send $new_password\r
+sleep 1
 expect "Retype * new password:"
+sleep 1
 send $new_password\r
+sleep 1
 interact
 EOF
 
