@@ -3,6 +3,7 @@ host="$1"
 port="$2"
 username="$3"
 new_password="$4"
+old_password=""
 rm $HOME/.ssh/known_hosts
 # Loop until SSH host is available
 while ! nc -z $host $port; do   
@@ -17,13 +18,13 @@ sleep 5
 /usr/bin/expect <<EOF
 spawn ssh -o "StrictHostKeyChecking=no" -p $port $username@$host
 expect "password:"
-send "\r"
-expect "old password:"
-send "\r"
-expect "new password:"
-send "$new_password\r"
-expect "new password:"
-send "$new_password\r"
+send \r
+expect "Enter * old password:"
+send \r
+expect "Enter * new password:"
+send $new_password\r
+expect "Retype * new password:"
+send $new_password\r
 interact
 EOF
 
