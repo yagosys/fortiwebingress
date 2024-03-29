@@ -3,7 +3,17 @@ host="$1"
 port="$2"
 username="$3"
 new_password="$4"
+rm $HOME/.ssh/known_hosts
+# Loop until SSH host is available
+while ! nc -z $host $port; do   
+  echo "Waiting for SSH host $host on port $port to become available..."
+  sleep 5 # Wait for 5 seconds before checking again
+done
 
+echo "SSH host $host on port $port is available for connect"
+echo
+echo $new_password
+sleep 5
 /usr/bin/expect <<EOF
 spawn ssh -o "StrictHostKeyChecking=no" -p $port $username@$host
 expect "password:"
@@ -17,5 +27,5 @@ send "$new_password\r"
 interact
 EOF
 
-#first_time_ssh_to_remotehost_and_setup_password "$1" "$2" "$3" "$4"
-#first_time_ssh_to_remotehost_and_setup_password "20.239.245.125" 2222 "admin" "Welcome.123"
+#./firsttimessh.sh k8strainingmaster001.westus.cloudapp.azure.com 2222 admin "Welcome.123"
+

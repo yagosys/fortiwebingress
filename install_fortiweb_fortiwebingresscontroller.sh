@@ -168,3 +168,4 @@ expose_fortiweb_loadbalancer_svc
 install_ingressclass
 install_fortiweb_ingresscontroller
 create_configmap_for_initcontainer
+kubectl apply -f $filename
