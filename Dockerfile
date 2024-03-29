@@ -2,7 +2,9 @@
 FROM ubuntu:latest
 
 # Install expect
-RUN apt-get update && apt-get install -y expect && apt-get install openssh-client -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y expect openssh-client netcat-openbsd && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the script into the container
 COPY firsttimessh.sh /firsttimessh.sh

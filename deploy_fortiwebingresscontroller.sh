@@ -1,16 +1,21 @@
 #!/bin/bash 
 
+function setfortiwebsshhostipifusemetallb() {
+
 if kubectl get ipaddresspools -n metallb-system > /dev/null 2>&1; then
-    echo "metallb ippool exist,  Please enter the value for fortiwebsshhost (default: k8strainingmaster001.westus.cloudapp.azure.com): "
-    echo "please input host name or ip within 30 seconds"
-    read -r -t 30 -p "" input
-    fortiwebsshhost=${input:-k8strainingmaster001.westus.cloudapp.azure.com}
+    echo "metallb ippool exist,use cluster master node external ip by default for fortiweb"
+#fortiwebsshhost="" && fortiwebsshhost=$(kubectl run curl-ipinfo --image=appropriate/curl --quiet --restart=Never  -it -- curl -s icanhazip.com) && echo $fortiwebsshhost && sleep 2 && kubectl delete pod curl-ipinfo
+fortiwebsshhost=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
+fortiwebsshhost=$(echo $fortiwebsshhost | awk -F'[/:]' '{print $4}')
 else
-    fortiwebsshost=""
+    fortiwebsshhost=""
 fi
 
 echo "fortiwebsshhost is set to: $fortiwebsshhost"
 
+}
+
+setfortiwebsshhostipifusemetallb
 fortiwebingresscontrollerclassname="fortiwebingresscontroller"
 
 fortiwebingresscontrollername="fortiwebingresscontroller"
