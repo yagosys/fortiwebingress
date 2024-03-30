@@ -37,3 +37,4 @@ curl http://$fortiwebsshhost:$fortiwebexposedvipserviceport/index.html
 deploy_application_deployment
 deploy_application_clusterIPSVC
 
+demo
