@@ -3,7 +3,7 @@
 
 - git clone
 ```
-https://github.com/yagosys/fortiwebingress.git
+git clone https://github.com/yagosys/fortiwebingress.git
 cd fortiwebingress
 
 ```
