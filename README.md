@@ -59,3 +59,11 @@ podname=$(kubectl get pod -l app=fortiwebingresscontroller -o json | jq -r .item
 kubectl logs po/$podname  -c fortiwebingresscontroller
 kubectl logs po/$podname -c ssh-setup
 ```
+- delete aks cluster
+```
+az aks delete --name ${clustername} -g $resourcegroupname  -y
+```
+- delete resourcegroup
+```
+az group delete -g  $resourcegroupname
+```
