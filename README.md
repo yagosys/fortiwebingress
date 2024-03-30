@@ -8,6 +8,7 @@ cd fortiwebingress
 
 ```
 - create aks
+
 if AKS already existed, you can skip this step
 if you want create aks on existing resourcegroup, change the variable value resourcegroupname to your existing resourcegroup
 
@@ -51,6 +52,7 @@ az aks get-credentials -g  $resourcegroupname -n ${clustername} --overwrite-exis
 ```
 
 - deploy demo ingress rule
+
 when deploy ingress rule, ingresscontroller will detect it and create the rule in fortiweb pod
 ```
 kubectl apply -f ingress.yaml
