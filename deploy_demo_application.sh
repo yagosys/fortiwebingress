@@ -30,7 +30,7 @@ kubectl expose deployment $demoapp2 --port=$demoapp2port
 
 function demo() {
 ip=$(kubectl get cm ssh-config -o json | jq -r .data.SSH_HOST)
-port=$(kkubectl get cm ssh-config -o json | jq -r .data.SSH_PORT)
+port=$(kubectl get cm ssh-config -o json | jq -r .data.SSH_PORT)
 curl http://$ip:$port/v2
 curl http://$ip:$port/index.html
 }
