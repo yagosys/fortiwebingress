@@ -8,8 +8,6 @@ demoapp2="nginx"
 demoapp2image="nginx"
 demoapp2port="80"
 
-fortiwebsshhost=""
-
 function deploy_application_deployment() {
 kubectl create deployment $demoapp1 --image=$demoapp1image
 kubectl rollout status deployment $demoapp1
@@ -22,19 +20,20 @@ kubectl expose deployment $demoapp1 --port=$demoapp1port
 kubectl expose deployment $demoapp2 --port=$demoapp2port
 }
 
-function getfortiweblbsvcip() {
-  if [ -z "$fortiwebsshhost" ]; then
-    fortiwebsshhost=$(kubectl get svc $fortiwebcontainerversion-service -o json | jq -r 'select(.spec.selector.app == "fortiweb") | .status.loadBalancer.ingress[0].ip')
-  fi
-echo $fortiwebsshhost
-}
+#function getfortiweblbsvcip() {
+#  if [ -z "$fortiwebsshhost" ]; then
+#    fortiwebsshhost=$(kubectl get svc $fortiwebcontainerversion-service -o json | jq -r 'select(.spec.selector.app == "fortiweb") | .status.loadBalancer.ingress[0].ip')
+#  fi
+#echo $fortiwebsshhost
+#}
+#
 
 function demo() {
-
-curl http://$fortiwebsshhost:$fortiwebexposedvipserviceport/v2
-curl http://$fortiwebsshhost:$fortiwebexposedvipserviceport/index.html
+ip=$(kubectl get cm ssh-config -o json | jq -r .data.SSH_HOST)
+port=$(kkubectl get cm ssh-config -o json | jq -r .data.SSH_PORT)
+curl http://$ip:$port/v2
+curl http://$ip:$port/index.html
 }
 deploy_application_deployment
 deploy_application_clusterIPSVC
-
 demo
