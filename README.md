@@ -1,7 +1,15 @@
 # fortiwebingress
 ![demo](./demo.png "demo diagram")
 
+- git clone
+```
+https://github.com/yagosys/fortiwebingress.git
+cd fortiwebingress
+
+```
 - create aks
+if AKS already existed, you can skip this step
+if you want create aks on existing resourcegroup, change the variable value resourcegroupname to your existing resourcegroup
 
 ```
 location="westus"
@@ -35,7 +43,12 @@ az aks get-credentials -g  $resourcegroupname -n ${clustername} --overwrite-exis
 ```
 ./deploy_fortiwebingresscontroller.sh
 ```
+- deploy demo application 
 
+```
+./deploy_demo_application.sh
+
+```
 
 - deploy demo ingress rule
 when deploy ingress rule, ingresscontroller will detect it and create the rule in fortiweb pod
