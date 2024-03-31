@@ -2,7 +2,7 @@
 
 # Configuration
 location="westus"
-rg="kubeadmk8svm"
+rg="demofortiwebingresscontroller"
 nsg_name="myNSG"
 srcaddressprefix="'*'"
 master_prefix="k8strainingmaster"

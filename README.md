@@ -7,14 +7,15 @@ git clone https://github.com/yagosys/fortiwebingress.git
 cd fortiwebingress
 
 ```
-- create aks
+- create aks or self-manged k8s
 
+## create AKS 
 if AKS already existed, you can skip this step
 if you want create aks on existing resourcegroup, change the variable value resourcegroupname to your existing resourcegroup
 
 ```
 location="westus"
-resourcegroupname="demoaksrg001"
+resourcegroupname="demofortiwebingresscontroller"
 
 az group create --location $location --resource-group $resourcegroupname
 
@@ -35,6 +36,11 @@ az aks create \
 az aks get-credentials -g  $resourcegroupname -n ${clustername} --overwrite-existing
 ```
 
+## or Create self managed K8s  
+
+```bash
+./create_kubeadm_k8s_on_ubuntu22.sh
+```
 - deploy fortiweb pod
 ```
 ./deploy_fortiweb_expose_slb.sh
