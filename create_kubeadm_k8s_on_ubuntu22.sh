@@ -23,7 +23,7 @@ number_of_workers=2
 
 master_vm_names=()
 worker_vm_names=()
-script_name="workloadtojoin.sh"
+cluster_join_script_name="./workloadtojoin.sh"
 create_vnet() {
   az network vnet create \
     --resource-group $rg \
@@ -117,7 +117,7 @@ copy_script_from_master() {
     ssh-keygen -f "/home/andy/.ssh/known_hosts" -R "${master_dns}"
 
     # Copy the script from the master node to the local directory
-    scp -o "StrictHostKeyChecking=no" "ubuntu@${master_dns}:workloadtojoin.sh" .
+    scp -o "StrictHostKeyChecking=no" "ubuntu@${master_dns}:${cluster_join_script_name}" .
 }
 
 
@@ -200,5 +200,5 @@ replace_fqdn_with_master_dns "./install_kubeadm_masternode.sh"
 run_script_on_master "./install_kubeadm_masternode.sh"
 run_script_on_workers "./install_kubeadm_workernode.sh"
 copy_script_from_master "${master_vm_names[0]}"
-run_script_on_workers "./workloadtojoin.sh"
+run_script_on_workers "${cluster_join_script_name}" 
 copy_and_modify_kubeconfig
