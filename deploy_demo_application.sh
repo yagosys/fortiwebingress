@@ -36,4 +36,4 @@ curl http://$ip:$port/index.html
 }
 deploy_application_deployment
 deploy_application_clusterIPSVC
-demo
+#demo
