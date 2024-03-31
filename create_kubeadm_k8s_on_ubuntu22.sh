@@ -119,7 +119,7 @@ copy_script_from_master() {
     local master_dns="${master_vm_name}.${domain}"
 
     # More secure approach to handle known_hosts entries
-    ssh-keygen -f "/home/andy/.ssh/known_hosts" -R "${master_dns}"
+    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${master_dns}"
 
     # Copy the script from the master node to the local directory
     scp -o "StrictHostKeyChecking=no" "ubuntu@${master_dns}:${cluster_join_script_name}" .
@@ -133,6 +133,7 @@ run_script_on_master() {
     local master_vm_name="${master_vm_names[0]}"
     local master_dns="${master_vm_name}.${domain}"
 
+    
     echo "Executing script on master node: $master_dns"
     scp -o "StrictHostKeyChecking=no" "$script_path" "ubuntu@${master_dns}:~/"
     ssh -o "StrictHostKeyChecking=no" "ubuntu@${master_dns}" "bash ~/$(basename $script_path)"
@@ -145,6 +146,7 @@ run_script_on_workers() {
         local worker_dns="${worker_vm_name}.${domain}"
 
         echo "Executing script on worker node: $worker_dns"
+        ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${worker_dns}"
         scp -o "StrictHostKeyChecking=no" "$script_path" "ubuntu@${worker_dns}:~/"
         ssh -o "StrictHostKeyChecking=no" "ubuntu@${worker_dns}" "bash ~/$(basename $script_path)"
     done
@@ -162,7 +164,16 @@ copy_and_modify_kubeconfig() {
 
     # Modify kubeconfig to use DNS name instead of IP for the server
     echo "Modifying kubeconfig to use DNS name for the server"
+
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS
+    sed -i '' "s/server: https:\/\/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}:6443/server: https:\/\/${master_dns}:6443/g" $local_kubeconfig_path
+else
+    # Linux (and potentially other UNIX-like systems)
     sed -i "s/server: https:\/\/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}:6443/server: https:\/\/${master_dns}:6443/g" $local_kubeconfig_path
+fi
+
+    #sed -i "s/server: https:\/\/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}:6443/server: https:\/\/${master_dns}:6443/g" $local_kubeconfig_path
 
     # Ensure the .kube directory exists
     mkdir -p "$HOME/.kube"
@@ -201,7 +212,6 @@ create_vm $master_prefix $number_of_masters "master"
 create_vm $worker_prefix $number_of_workers "worker"
 update_nics_with_nsg "${master_vm_names[@]}"
 update_nics_with_nsg "${worker_vm_names[@]}"
-# Assuming 'install_kubeadm_masternode.sh' and 'install_kubeadm_workernode.sh' are located in the current directory
 replace_fqdn_with_master_dns "./install_kubeadm_masternode.sh"
 run_script_on_master "./install_kubeadm_masternode.sh"
 run_script_on_workers "./install_kubeadm_workernode.sh"
