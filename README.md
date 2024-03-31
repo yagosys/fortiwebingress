@@ -46,6 +46,7 @@ install metallb loadbalancer
 ```
 ./ingressmetallbforkubeadmk8s.sh
 ```
+## Deploy fortiweb and ingress controller 
 - deploy fortiweb pod
 ```
 ./deploy_fortiweb_expose_slb.sh
@@ -61,7 +62,7 @@ install metallb loadbalancer
 ./deploy_demo_application.sh
 
 ```
-
+## Deploy demo ingress rule 
 - deploy demo ingress rule
 
 when deploy ingress rule, ingresscontroller will detect it and create the rule in fortiweb pod
@@ -69,7 +70,7 @@ when deploy ingress rule, ingresscontroller will detect it and create the rule i
 kubectl apply -f ingress.yaml
 
 ```
-
+## Verify 
 - verify 
 ```
 ip=$(kubectl get cm ssh-config -o json | jq -r .data.SSH_HOST)
@@ -85,6 +86,8 @@ podname=$(kubectl get pod -l app=fortiwebingresscontroller -o json | jq -r .item
 kubectl logs po/$podname  -c fortiwebingresscontroller
 kubectl logs po/$podname -c ssh-setup
 ```
+## clean up 
+
 - delete aks cluster
 ```
 az aks delete --name ${clustername} -g $resourcegroupname  -y
