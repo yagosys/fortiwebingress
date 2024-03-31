@@ -2,7 +2,7 @@
 
 # Configuration
 location="westus"
-rg="wandy"
+rg="kubeadmk8svm"
 nsg_name="myNSG"
 srcaddressprefix="'*'"
 master_prefix="k8strainingmaster"
@@ -24,6 +24,11 @@ number_of_workers=2
 master_vm_names=()
 worker_vm_names=()
 cluster_join_script_name="./workloadtojoin.sh"
+
+create_rg() {
+az group create --location $location --resource-group $rg
+}
+
 create_vnet() {
   az network vnet create \
     --resource-group $rg \
@@ -187,6 +192,7 @@ replace_fqdn_with_master_dns() {
 
 
 # Initial setup calls
+create_rg
 create_vnet
 create_nsg
 create_nsg_rule
@@ -202,3 +208,4 @@ run_script_on_workers "./install_kubeadm_workernode.sh"
 copy_script_from_master "${master_vm_names[0]}"
 run_script_on_workers "${cluster_join_script_name}" 
 copy_and_modify_kubeconfig
+
