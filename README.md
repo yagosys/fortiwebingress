@@ -41,6 +41,11 @@ az aks get-credentials -g  $resourcegroupname -n ${clustername} --overwrite-exis
 ```bash
 ./create_kubeadm_k8s_on_ubuntu22.sh
 ```
+
+install metallb loadbalancer
+```
+./ingressmetallbforkubeadmk8s.sh
+```
 - deploy fortiweb pod
 ```
 ./deploy_fortiweb_expose_slb.sh
