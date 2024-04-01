@@ -19,7 +19,7 @@ address_prefix="10.0.0.0/16"
 subnet_prefix="10.0.0.0/24"
 domain="$location.cloudapp.azure.com"
 number_of_masters=1
-number_of_workers=2
+number_of_workers=0
 
 master_vm_names=()
 worker_vm_names=()
@@ -201,6 +201,27 @@ replace_fqdn_with_master_dns() {
     echo "Replaced 'localhost' with '${master_dns}' in $file_path"
 }
 
+untaint_master_node() {
+    #local master_vm_name="k8strainingmaster1"
+    local master_vm_name="${master_vm_names[0]}"
+    echo "Master VM Name: $master_vm_name"
+
+    if [[ $number_of_workers -eq 0 ]]; then
+        echo "Untainting master node because there are no worker nodes..."
+
+        # Dynamically get the key of the taint to remove
+        local taint_keys=$(kubectl get node "$master_vm_name" -o jsonpath='{.spec.taints[*].key}')
+        
+        for taint_key in $taint_keys; do
+            if [[ $taint_key == "node-role.kubernetes.io/master" || $taint_key == "node-role.kubernetes.io/control-plane" ]]; then
+                echo "Removing taint $taint_key:NoSchedule from the master node..."
+                kubectl taint nodes "$master_vm_name" "$taint_key:NoSchedule-"
+            fi
+        done
+    else
+        echo "There are worker nodes present. No need to untaint the master node."
+    fi
+}
 
 # Initial setup calls
 create_rg
@@ -218,4 +239,4 @@ run_script_on_workers "./install_kubeadm_workernode.sh"
 copy_script_from_master "${master_vm_names[0]}"
 run_script_on_workers "${cluster_join_script_name}" 
 copy_and_modify_kubeconfig
-
+untaint_master_node
