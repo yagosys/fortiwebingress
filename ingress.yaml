@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gowebingressrule
+  annotations:
+    fortiweb/match-expression: v2
 spec:
   ingressClassName: fortiwebingresscontroller
   rules:
@@ -19,6 +21,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginxingressrule
+  annotations:
+    fortiweb/match-expression: index.html
 spec:
   ingressClassName: fortiwebingresscontroller
   rules:

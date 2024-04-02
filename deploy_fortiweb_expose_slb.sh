@@ -120,6 +120,7 @@ data:
   SSH_USERNAME: "${fortiwebsshusername}"
   SSH_NEW_PASSWORD: "${fortiwebsshpassword}"
   FORTIWEBIMAGENAME: "${fortiwebcontainerversion}"
+  FORTIWEBSVCPORT:   "${fortiwebexposedvipserviceport}"
 EOF
 kubectl apply -f $filename
 }
