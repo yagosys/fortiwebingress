@@ -1,4 +1,6 @@
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.3/config/manifests/metallb-native.yaml
+wget -c  https://raw.githubusercontent.com/metallb/metallb/v0.14.3/config/manifests/metallb-native.yaml
+kubectl apply -f metallb-native.yaml
+
 kubectl rollout status deployment controller -n metallb-system
 
 local_ip=$(kubectl get node -o wide | grep 'control-plane' | awk '{print $6}')
