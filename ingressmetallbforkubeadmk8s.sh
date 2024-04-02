@@ -1,5 +1,4 @@
-wget -c  https://raw.githubusercontent.com/metallb/metallb/v0.14.3/config/manifests/metallb-native.yaml
-kubectl apply -f metallb-native.yaml
+kubectl apply -f  https://raw.githubusercontent.com/metallb/metallb/v0.14.3/config/manifests/metallb-native.yaml
 
 kubectl rollout status deployment controller -n metallb-system
 

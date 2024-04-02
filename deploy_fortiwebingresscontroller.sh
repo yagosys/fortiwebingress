@@ -25,6 +25,7 @@ fortiwebingresscontrollernamespace="default"
 filename="deploy_fortiwebingresscontroller.yaml"
 rm $filename
 
+fortiwebexposedvipserviceport="8888"
 fortiwebsshusername="admin"
 fortiwebsshport="2222"
 fortiwebsshpassword="Welcome.123"
@@ -141,8 +142,11 @@ data:
   SSH_USERNAME: "${fortiwebsshusername}"
   SSH_NEW_PASSWORD: "${fortiwebsshpassword}"
   FORTIWEBIMAGENAME: "${fortiwebcontainerversion}"
+  FORTIWEBSVCPORT:   "${fortiwebexposedvipserviceport}"
 EOF
 }
+
+
 install_ingressclass
 install_fortiweb_ingresscontroller
 create_configmap_for_initcontainer
