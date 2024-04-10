@@ -16,6 +16,7 @@ sudo apt-get install socat conntrack -y
 sudo apt-get install jq -y
 sudo apt-get install apt-transport-https ca-certificates -y
 sudo apt-get install hey -y
+sudo apt-get install certbot -y
 
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
@@ -99,6 +100,7 @@ NODENAME=`hostname | tr -d '-'`
 POD_CIDR="10.244.0.0/16"
 SERVICE_CIDR="10.96.0.0/12"
 FQDN="k8strainingmaster1.westus.cloudapp.azure.com"
+EMAIL="yagosys@gmail.com"
 echo $IPADDR $NODENAME  | sudo tee -a  /etc/hosts
 
 sudo kubeadm reset -f
@@ -146,6 +148,13 @@ kubectl get tigerastatus
 
 kubectl rollout restart deployment coredns -n kube-system
 kubectl rollout status deployment coredns -n kube-system 
+
+
+sudo certbot certonly --standalone -d $FQDN --preferred-challenges http --agree-tos -n -m $EMAIL --keep-until-expiring 
+#sudo cp -R /etc/letsencrypt/live/$FQDN /home/${username} 
+sudo cp /etc/letsencrypt/live/$FQDN/fullchain.pem /home/${username}
+sudo cp /etc/letsencrypt/live/$FQDN/privkey.pem /home/${username}
+sudo chmod 644 /home/${username}/privkey.pem
 
 cat /home/${username}/workloadtojoin.sh
 [ $? -eq 0 ] && echo "installation done on master node"
