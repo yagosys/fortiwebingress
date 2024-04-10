@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+azureslbdnslabel="k8strainingmaster1"
+
 function setfortiwebsshhostipifusemetallb() {
 if kubectl get ipaddresspools -n metallb-system > /dev/null 2>&1; then
     echo "metallb ippool exist,use cluster master node external ip by default for fortiweb"
@@ -39,7 +41,13 @@ function configloadbalanceripifmetallbcontrollerinstalled() {
     cmd="kubectl get ipaddresspools -n metallb-system -o json"
     ip=$(eval $cmd | jq -r '.items[0].spec.addresses[0]')
     ip=$(echo "$ip" | cut -d'/' -f1)
-    fortiweblbsvcmetadataannotation="metallb.universe.tf/loadBalancerIPs: $ip"
+    # Check if $ip is not empty
+    if [ -n "$ip" ]; then
+        fortiweblbsvcmetadataannotation="metallb.universe.tf/loadBalancerIPs: $ip"
+        echo "Annotation to be applied: $fortiweblbsvcmetadataannotation"
+    else
+        echo "No IP address retrieved from MetalLB IP address pools."
+    fi
 }
 configloadbalanceripifmetallbcontrollerinstalled
 echo $fortiweblbsvcmetadataannotation 
@@ -88,6 +96,7 @@ metadata:
   name: $fortiwebcontainerversion-service
   annotations:
     $fortiweblbsvcmetadataannotation
+    service.beta.kubernetes.io/azure-dns-label-name: $azureslbdnslabel
 spec:
   sessionAffinity: ClientIP
   ports:
@@ -108,6 +117,7 @@ EOF
 
 
 function create_configmap_for_initcontainer() {
+#fortiwebsshhost=$(kubectl get pods -l app=fortiweb -o=jsonpath='{.items[*].status.podIP}')
 cat << EOF | tee -a $filename
 ---
 apiVersion: v1
@@ -124,6 +134,7 @@ data:
 EOF
 kubectl apply -f $filename
 }
+
 install_fortiweb_deployment
 expose_fortiweb_loadbalancer_svc
 kubectl apply -f $filename
