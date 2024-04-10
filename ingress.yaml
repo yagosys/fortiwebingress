@@ -4,6 +4,7 @@ metadata:
   name: gowebingressrule
   annotations:
     fortiweb/match-expression: v2
+    fortiweb/FORTIWEBSVCPORT: "8888"
 spec:
   ingressClassName: fortiwebingresscontroller
   rules:
@@ -23,6 +24,7 @@ metadata:
   name: nginxingressrule
   annotations:
     fortiweb/match-expression: index.html
+    fortiweb/FORTIWEBSVCPORT: "8888"
 spec:
   ingressClassName: fortiwebingresscontroller
   rules:
