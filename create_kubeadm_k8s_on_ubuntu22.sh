@@ -1,5 +1,9 @@
 #!/bin/bash -x
-
+echo `
+this script will install a self managed k8s with kubeadm on your azure environemtn
+the default number of worker node is 0, so by default master node will also be configured to create pod
+change worker ndoe >0 will disable this behavior 
+`
 # Configuration
 location="westus"
 rg="demofortiwebingresscontroller"
@@ -223,6 +227,19 @@ untaint_master_node() {
     fi
 }
 
+copy_cert_from_master() {
+    # Directly use the first master VM name assuming it's the primary one
+    local master_vm_name=$1
+    local master_dns="${master_vm_name}.${domain}"
+
+    # More secure approach to handle known_hosts entries
+    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${master_dns}"
+
+    # Copy the script from the master node to the local directory
+    scp -o "StrictHostKeyChecking=no"  "ubuntu@${master_dns}:/home/ubuntu/fullchain.pem" .
+    scp -o "StrictHostKeyChecking=no"  "ubuntu@${master_dns}:/home/ubuntu/privkey.pem" .
+}
+
 # Initial setup calls
 create_rg
 create_vnet
@@ -240,3 +257,4 @@ copy_script_from_master "${master_vm_names[0]}"
 run_script_on_workers "${cluster_join_script_name}" 
 copy_and_modify_kubeconfig
 untaint_master_node
+copy_cert_from_master "${master_vm_names[0]}"
