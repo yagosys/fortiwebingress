@@ -70,6 +70,14 @@ when deploy ingress rule, ingresscontroller will detect it and create the rule i
 kubectl apply -f ingress.yaml
 
 ```
+or deploy tls version
+```
+kubectl apply -f ingresstls.yaml
+```
+to use tls, the certificate indicated in the yaml file has to be prepared and upload to fortiweb.
+if the certificate does not exist, the fortiweb default certificate will be used.
+
+
 ## Verify 
 - verify 
 ```
@@ -78,6 +86,8 @@ port="8888"
 curl http://$ip:$port/v2
 curl http://$ip:$port/index.html
 ```
+for https, use curl https instead
+
 
 - Check fortiwebingresscontroller log
 
@@ -86,6 +96,13 @@ podname=$(kubectl get pod -l app=fortiwebingresscontroller -o json | jq -r .item
 kubectl logs po/$podname  -c fortiwebingresscontroller
 kubectl logs po/$podname -c ssh-setup
 ```
+## Delete demo ingress rule 
+
+- delete demo ingress rule
+```
+kubectl delete -f ingress.yaml
+```
+
 ## clean up 
 
 - delete aks cluster
