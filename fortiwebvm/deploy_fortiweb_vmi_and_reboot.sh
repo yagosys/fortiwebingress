@@ -1,4 +1,6 @@
-kubectl delete -f fortiwebvmsvc.yaml
+#!/bin/bash -x
+vminame="fweb70577-deployment"
+
 kubectl delete -f fortiweblogdisk.yaml 
 kubectl delete -f fortiwebvmimagedisk.yaml
 kubectl delete -f fortiweb_vmi_with_disk.yaml
@@ -11,11 +13,11 @@ kubectl apply -f fortiweb_vmi_with_disk.yaml
 
 # Wait for the VM to be in the "Running" state before attempting a reboot
 while :; do
-    VM_STATUS=$(kubectl get vmi vm1 --output=jsonpath='{.status.phase}')
+    VM_STATUS=$(kubectl get vmi $vminame --output=jsonpath='{.status.phase}')
     if [ "$VM_STATUS" = "Running" ]; then
         echo "VM is now running. Proceeding with soft reboot."
         sleep 120
-        virtctl soft-reboot vm1
+        virtctl soft-reboot $vminame
         break
     elif [ "$VM_STATUS" = "Failed" ] || [ "$VM_STATUS" = "Succeeded" ]; then
         echo "VM is in a terminal state: $VM_STATUS. Exiting loop."
@@ -26,4 +28,3 @@ while :; do
     fi
 done
 
-kubectl apply -f fortiwebvmsvc.yaml
