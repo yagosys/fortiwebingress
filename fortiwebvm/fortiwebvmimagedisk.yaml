@@ -1,0 +1,15 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: "fortiwebvmimagedisk"
+spec:
+  source:
+    http:
+      url: "https://wandyeastasia.blob.core.windows.net/terraformps/boot.qcow2"
+#      url: "https://wandyeastasia.blob.core.windows.net/terraformps/FWB_KVM-v600-build1489-FORTINET.out.kvm.boot.qcow2"
+  pvc:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "50000Mi"
