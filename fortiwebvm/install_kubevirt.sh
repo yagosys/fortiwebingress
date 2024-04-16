@@ -31,7 +31,7 @@ wget -O ~/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/${K
 chmod +x ~/bin/virtctl
 #sudo install ~/virtctl /usr/local/bin
 }
-#install_virtctl
+install_virtctl
 echo install krew
 function install_krew (){
   set -x; cd "$(mktemp -d)" &&
