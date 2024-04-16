@@ -1,0 +1,25 @@
+#make sure config below on fortiweb first
+#config system global
+#  set admin-port 81
+#  set admin-sport 18443
+#end
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortiwebvmhttps
+spec:
+  externalTrafficPolicy: Local
+  sessionAffinity: ClientIP
+  ports:
+  - port: 18443
+    name: webgui
+    protocol: TCP
+    targetPort: 18443
+  - port: 2222
+    name: ssh
+    protocol: TCP
+    targetPort: 22
+  selector:
+    kubevirt.io/domain: fortiweb
+  type: LoadBalancer
