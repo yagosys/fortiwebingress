@@ -1,0 +1,44 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    kubevirt.io/os: linux
+    app: fortiweb
+  name: fortiosvm
+spec:
+  running: true
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        kubevirt.io/domain: fortios
+        app: fortios
+        app: fortiweb
+    spec:
+      nodeSelector: #nodeSelector matches nodes where performance key has high as value.
+        nested: "true"
+      domain:
+        cpu:
+          cores: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: disk0
+          - cdrom:
+              bus: sata
+              readonly: true
+            name: cloudinitdisk
+        resources:
+          overcommitGuestOverhead: true
+          requests:
+            memory: 1024M
+        memory:
+          guest: 2048M 
+      volumes:
+      - name: disk0
+        persistentVolumeClaim:
+          claimName: fortiosvmimagedisk
+      - name: cloudinitdisk
+        persistentVolumeClaim:
+          claimName: cidata

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fweb70577-service
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: k8strainingmaster1
+    fortios/letsencrypt: fullchain
+spec:
+  externalTrafficPolicy: Local
+  sessionAffinity: ClientIP
+  ports:
+  - port: 18443
+    name: webgui
+    protocol: TCP
+    targetPort: 443
+  - port: 2222
+    name: ssh
+    protocol: TCP
+    targetPort: 22
+  - port: 8888
+    name: fortiwebsvc
+    targetPort: 8888
+  selector:
+    kubevirt.io/domain: fortios
+    app: fortiweb
+  type: LoadBalancer

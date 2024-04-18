@@ -1,0 +1,14 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: "fortiosvmimagedisk"
+spec:
+  source:
+    http:
+      url: "https://wandyeastasia.blob.core.windows.net/terraformps/FGT_VM64_KVM-v7.4.3.F-build2573-FORTINET.out.kvm.qcow2"
+  pvc:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "7000Mi"
