@@ -60,7 +60,8 @@ System is ready.
 2024-04-19_08:46:37.62152 INFO: 2024/04/19 08:46:37 configmap name: fos-license, labels: map[app:fos category:license]
 2024-04-19_08:46:37.62152 INFO: 2024/04/19 08:46:37 got a fos license
 ```
-## Deploy demo application and create clusterip service  
+# Deploy demo application and create clusterip service  
+
 this demo application will be the backend application 
 
 ```
@@ -73,28 +74,31 @@ backendip=$(k get svc -l app=multitool01 -o json | jq -r .items[].spec.clusterIP
 $ echo $backendip
 
 ```
-## Create configuration for cfos
+
+# Create configuration for cfos
+
 ```
 create_configmap_for_cfos.sh
 ```
+
 then check the yml file created by script. and apply it
 
 ```
 kubectl apply -f demoservicecm.yml 
 ```
 
-```
+## Check the cfos configuration and log
 
-### Check the cfos configuration and log
 ```
 kubectl logs -f po/`k get pod -l app=fortiweb | grep Running  | tail -n 1 | cut -d ' ' -f 1`
 ```
-## Deploy cfos lb service
+# Deploy cfos lb service
 
 ```
  kubectl apply -f deploy_fortiweb_lb_svc.yaml
 ```
-## Verify the result
+
+# Verify the result
 
 ```
 curl http://k8strainingmaster1.westus.cloudapp.azure.com:8888
@@ -105,7 +109,7 @@ curl http://k8strainingmaster1.westus.cloudapp.azure.com:8888
 ```
 kubectl exec -it po/`k get pod -l app=fortiweb | grep Running  | tail -n 1 | cut -d ' ' -f 1` -- sh -c 'more /var/log/log/traffic.0'
 ```
-## scale fortiweb
+# scale fortiweb
 since the configuration are saved on host
 
 
