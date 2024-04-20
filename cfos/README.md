@@ -120,6 +120,56 @@ curl http://k8strainingmaster1.westus.cloudapp.azure.com:8888
 ```
 kubectl exec -it po/`k get pod -l app=fortiweb | grep Running  | tail -n 1 | cut -d ' ' -f 1` -- sh -c 'more /var/log/log/traffic.0'
 ```
+# Demo virus scan 
+
+## create demo application 
+```
+create_demo_file_upload_application_svc.sh
+```
+
+## modify protected application to goweb
+
+```
+kubectl edit svc fweb70577-service
+```
+then modify annotation to 
+protectedClusterIPSVCName: goweb
+```
+##  check result
+
+cfoscontroller will automatically update backend application 
+
+
+```
+found annotation protectedClusterIPSVCName with value gowebget service fweb70577-service endpoint with ip = 10.224.0.16 and Port = 8888 
+get service goweb with ClusterIP= 10.96.195.4 and Port = 80 
+%!(EXTRA string=80)PrepareVIPConfigMap %s cfoscmvip
+ConfigMap cfoscmvip already exists, updating it
+ConfigMap Updated Successfully
+take value for service fweb70577-service in namespace default
+set ServiceName=service8888, TcpPortRange=8888PrepareServiceConfigMap %s cfoscmservice
+ConfigMap cfoscmservice already exists, updating it
+ConfigMap Updated Successfully
+take value for service fweb70577-service in namespace default
+PreparePolicyConfigMap %s cfoscmpolicy
+ConfigMap cfoscmpolicy already exists, updating it
+ConfigMap Updated Successfully
+```
+# demo file upload
+
+```
+http://k8strainingmaster1.westus.cloudapp.azure.com:8888/upload
+```
+then upload "eicarcom2.zip" , cfos will block the upload
+
+## check log 
+```
+kubectl exec -it po/`k get pod -l app=fortiweb | grep Running  | tail -n 1 | cut -d ' ' -f 1` -- sh -c 'more /var/log/log/virus.0'
+```
+result will be 
+```
+date=2024-04-20 time=12:30:48 eventtime=1713616248 tz="+0000" logid="0211008192" type="utm" subtype="virus" eventtype="infected" level="warning" policyid=3 msg="File is infected." action="blocked" service="HTTP" sessionid=616 srcip=10.224.0.4 dstip=10.96.195.4 srcport=24579 dstport=80 srcintf="eth0" dstintf="eth0" proto=6 direction="outgoing" filename="eicarcom2.zip" checksum="45a2cdd" quarskip="No-skip" virus="EICAR_TEST_FILE" dtype="Virus" ref="http://www.fortinet.com/ve?vn=EICAR_TEST_FILE" virusid=2172 url="http://k8strainingmaster1.westus.cloudapp.azure.com/upload" profile="default" agent="Chrome/120.0.0.0" analyticscksum="e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7868382b7cae747b397" analyticssubmit="false"
+```
 # scale fortiweb
 since the configuration are saved on host
 
