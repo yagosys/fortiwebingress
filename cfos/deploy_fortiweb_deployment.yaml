@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fweb70577-deployment
+  labels:
+    app: fortiweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortiweb
+  template:
+    metadata:
+      labels:
+        app: fortiweb
+    spec:
+      containers:
+      - name: fweb70577-container
+        image: interbeing/fos:latest
+        securityContext:
+          privileged: true
+          capabilities:
+              add: ["NET_ADMIN","SYS_ADMIN","NET_RAW"]
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /data
+          name: data-volume
+      imagePullSecrets:
+      - name: dockerinterbeing
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /cfosdata
+          type: DirectoryOrCreate
