@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-cfoscontrolleramd64alpha1
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cfoscontrolleramd64alpha1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cfoscontrolleramd64alpha1
+  template:
+    metadata:
+      labels:
+        app: cfoscontrolleramd64alpha1
+    spec:
+      serviceAccountName: sa-cfoscontrolleramd64alpha1
+      containers:
+      - name: cfoscontrolleramd64alpha1
+        image: interbeing/myfmg:cfoscontrolleramd64alpha1
+        imagePullPolicy: Always
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cfoscontrolleramd64alpha1-role
+rules:
+- apiGroups: ["", "extensions", "networking.k8s.io"]
+  resources: ["ingresses", "services", "endpoints", "pods", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses/status"]
+  verbs: ["get", "list", "watch", "update"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch", "update", "create"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cfoscontrolleramd64alpha1-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cfoscontrolleramd64alpha1-role
+subjects:
+- kind: ServiceAccount
+  name: sa-cfoscontrolleramd64alpha1
+  namespace: default
