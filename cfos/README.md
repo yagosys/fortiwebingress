@@ -1,4 +1,4 @@
-# Deploy k8s cluster
+# Option 1 - Deploy k8s cluster
 
 ```
 create_kubeadm_k8s_on_ubuntu22.sh
@@ -8,6 +8,12 @@ create_kubeadm_k8s_on_ubuntu22.sh
 
 ```
 ingressmetallbforkubeadmk8s.sh
+```
+
+# Optino 2 - Deploy AKS
+
+```
+create_aks_cluster_nestedvm.sh
 ```
 
 # Deploy cfos
@@ -71,11 +77,16 @@ kubectl expose deployment multitool01-deployment --port 80
 ### Check backend svc ip
 ```
 backendip=$(k get svc -l app=multitool01 -o json | jq -r .items[].spec.clusterIP)
-$ echo $backendip
+echo $backendip
 
 ```
 
-# Create configuration for cfos
+# Deploy cfos lb service
+
+```
+ kubectl apply -f deploy_fortiweb_lb_svc.yaml
+```
+# option 1 - Create configuration for cfos
 
 ```
 create_configmap_for_cfos.sh
@@ -86,16 +97,16 @@ then check the yml file created by script. and apply it
 ```
 kubectl apply -f demoservicecm.yml 
 ```
+# option 2 - use cfos controller 
+
+```
+
+```
 
 ## Check the cfos configuration and log
 
 ```
 kubectl logs -f po/`k get pod -l app=fortiweb | grep Running  | tail -n 1 | cut -d ' ' -f 1`
-```
-# Deploy cfos lb service
-
-```
- kubectl apply -f deploy_fortiweb_lb_svc.yaml
 ```
 
 # Verify the result
