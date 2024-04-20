@@ -133,12 +133,16 @@ create_demo_file_upload_application_svc.sh
 kubectl edit svc fweb70577-service
 ```
 then modify annotation to 
+```
 protectedClusterIPSVCName: goweb
 ```
 ##  check result
 
 cfoscontroller will automatically update backend application 
-
+```
+kubectl logs -f po/`k get pod -l app=cfoscontrolleramd64alpha1 | grep Running  | tail -n 1 | cut -d ' ' -f 1`
+```
+result will be 
 
 ```
 found annotation protectedClusterIPSVCName with value gowebget service fweb70577-service endpoint with ip = 10.224.0.16 and Port = 8888 
