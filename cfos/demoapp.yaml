@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multitool01-deployment
+  labels:
+      app: multitool01
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+        app: multitool01
+  template:
+    metadata:
+      labels:
+        app: multitool01
+    spec:
+      containers:
+        - name: multitool01
+          image: praqma/network-multitool
+          imagePullPolicy: Always
+          args:
+            - /bin/sh
+            - -c
+#            - ip route add 10.0.0.0/16  via 169.254.1.1; /usr/sbin/nginx -g "daemon off;"
+            - /usr/sbin/nginx -g "daemon off;"
+          securityContext:
+            privileged: true
