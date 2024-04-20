@@ -100,7 +100,7 @@ kubectl apply -f demoservicecm.yml
 # option 2 - use cfos controller 
 
 ```
-
+kubectl apply -f deploy_cfoscontroller.yaml
 ```
 
 ## Check the cfos configuration and log
