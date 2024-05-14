@@ -1,0 +1,37 @@
+# web proxy
+
+config web-proxy explicit
+    set status enable
+    set socks enable
+    set http-incoming-port 8080
+    set unknown-http-version best-effort
+    set sec-default-action accept
+end
+
+config firewall proxy-policy
+    edit 1
+        set uuid 4754238e-119c-51ef-f033-4d6ca7eb700f
+        set name "test"
+        set proxy explicit-web
+        set dstintf "port1"
+        set srcaddr "all"
+        set dstaddr "all"
+        set service "web-proxy"
+        set action accept
+        set schedule "always"
+        set logtraffic all
+        set utm-status enable
+        set ssl-ssh-profile "certificate-inspection"
+        set av-profile "default"
+        set webfilter-profile "default"
+        set ips-sensor "default"
+        set application-list "default"
+    next
+end
+
+config system global
+    set alias "FGVMULTM24001028"
+    set gui-auto-upgrade-setup-warning disable
+    set hostname "FGVMULTM24001028"
+    set timezone "US/Pacific"
+end
